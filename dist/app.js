@@ -37,4 +37,17 @@ function handleQuoteClick(e){const save=e.target.closest('[data-save]');if(save)
 $('#filters').onclick=e=>{const b=e.target.closest('[data-category]');if(b){filter=b.dataset.category;render()}};$('#kindFilters').onclick=e=>{const b=e.target.closest('[data-kind]');if(b){kindFilter=b.dataset.kind;render()}};$('#tagFilters').onclick=e=>{const b=e.target.closest('[data-tag]');if(b){tagFilter=b.dataset.tag;render()}};
 $('#search').oninput=render;document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));$('.close').onclick=()=>$('#detail').close();$('#detail').addEventListener('close',()=>{selectedId=null});$('#detail').addEventListener('click',e=>{if(e.target===$('#detail')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close()}});
 $('#practiceText').value=practice;$('#savePractice').onclick=()=>{practice=$('#practiceText').value;if(!practice.trim())return toast('先寫下一句你的練習吧。');if(persist())toast('練習已儲存，讓表達慢慢進步。')};$('#date').textContent=new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',month:'long',day:'numeric',weekday:'long'}).format(new Date());$('#date').onclick=()=>toast('依台北日期輪替：每日 20 則，連續七天不重複。');setInterval(()=>{if(taipeiDate()!==day)location.reload()},60000);
-async function init(){try{const response=await fetch('quotes.json');if(!response.ok)throw Error('Load failed');bank=await response.json();saved=saved.filter(id=>itemById(id));daily=selectDaily(dayNumber);render();$('#loading').hidden=true}catch{$('#loading').innerHTML='<p>暫時無法載入句庫，請稍後重試。</p><button class="primary" id="retry">重新載入</button>';$('#retry').onclick=init}}init();
+async function init(){try{if(Array.isArray(globalThis.SHIJU_QUOTES)){bank=globalThis.SHIJU_QUOTES}else{const response=await fetch('quotes.json');if(!response.ok)throw Error('Load failed');bank=await response.json();}saved=saved.filter(id=>itemById(id));daily=selectDaily(dayNumber);render();$('#loading').hidden=true}catch{$('#loading').innerHTML='<p>暫時無法載入句庫，請稍後重試。</p><button class="primary" id="retry">重新載入</button>';$('#retry').onclick=init}}init();
+
+// Desktop installation is progressive enhancement; the downloadable HTML also works on file://.
+if(typeof navigator!=='undefined'){
+ let installPrompt=null;
+ const status=$('#offlineStatus');const install=$('#installApp');
+ if(globalThis.SHIJU_QUOTES){status.textContent='獨立離線版 · 已內含全部句庫';install.hidden=true;}
+ else if('serviceWorker' in navigator&&location.protocol==='https:'){
+ navigator.serviceWorker.register('./sw.js').then(()=>Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(Error('Offline preparation timed out')),30000))])).then(async()=>{const cached=await caches.match(new URL('./quotes.json',location.href).href);status.textContent=cached?'已可離線使用':'離線資料尚未完成，請保持連線';}).catch(()=>{status.textContent='此瀏覽器無法準備離線快取，請下載獨立離線版';});
+ }else{status.textContent='可下載獨立離線版使用';}
+ globalThis.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;install.textContent='安裝拾句到桌面';});
+ globalThis.addEventListener('appinstalled',()=>{installPrompt=null;install.textContent='已安裝到桌面';install.disabled=true;});
+ install.onclick=async()=>{if(!installPrompt){toast('請使用瀏覽器的安裝功能，或依下方 Safari 說明加入桌面。');return}await installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;};
+}

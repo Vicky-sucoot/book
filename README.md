@@ -25,3 +25,11 @@ node tests/journal.test.cjs
 收藏、心得、情境標籤、表達練習、當日閱讀進度及複習紀錄存在瀏覽器 `localStorage` 的 `shiju-v1`。既有收藏 ID 與練習會保留，選句版本改變時只重設當日閱讀進度。沒有帳號同步，清除網站資料或換瀏覽器不會保留紀錄。
 
 測試涵蓋跨週輪替、舊資料、類型及作者搜尋、心得與標籤、文字跳脫、練習轉入、複習、閱讀進度與儲存失敗提示。使用輕量 DOM 模擬，不能替代真實瀏覽器的版面與操作檢查。
+
+## 桌面與離線
+
+線上版提供 Web App Manifest 與 Service Worker，首次連線完成後可使用瀏覽器安裝功能加入桌面。快取僅包含本站 App 資源；原文外部連結仍需網路。更新快取清單時須調整 `sw.js` 的快取版本。
+
+`python3 scripts/package-offline.py` 會產生 `dist/shiju-offline.html` 和 `dist/shiju-offline.zip`。獨立 HTML 內嵌 CSS、程式與全部句庫，可以直接用 `file://` 開啟；無外部字型或程式依賴。下載版與線上版的瀏覽器儲存各自獨立。
+
+`node tests/offline.test.cjs` 檢查獨立檔案在禁止網路時的功能，以及模擬 Service Worker 的快取與離線回應。這些檢查不代表已完成特定作業系統的安裝測試。
