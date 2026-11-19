@@ -1,0 +1,16 @@
+{
+  "total": 4000,
+  "byKind": {
+    "原創觀點": 1000,
+    "古典短句": 1000,
+    "文學節選": 1000,
+    "古詩": 1000
+  },
+  "cycleDays": 200,
+  "dailyPerKind": 5,
+  "sourceRepository": "https://github.com/chinese-poetry/chinese-poetry",
+  "sourceCommit": "b8594f81a89752241442f2ce267d6f66f96704ee",
+  "newOriginals": "875 則情境化原創短句（35 個情境 × 25 項表達方法），加上原有 125 則。",
+  "newExcerpts": "依電子底本句界擷取、去重；提供閱讀提示與同段原文，並非逐句人工校勘或白話翻譯。",
+  "contentHash": "54718e5f1e844d02a77ca6a236788abfcd0f1565501e4bf2470c930da4445c14"
+}
