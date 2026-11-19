@@ -15,10 +15,10 @@ vm.runInContext('openDetail(50)',ctx);assert(nodes['#detailBody'].innerHTML.incl
 ctx.document.querySelector('#quoteNote').value='<img src=x onerror=alert(1)> 想用在道謝';selectedTags=['感謝','安慰'];nodes['#saveNote'].onclick();let stored=JSON.parse(local['shiju-v1']);assert(stored.notes[50].includes('<img'));assert.deepEqual(stored.labels[50],['感謝','安慰']);
 vm.runInContext('openDetail(50)',ctx);assert(nodes['#detailBody'].innerHTML.includes('&lt;img'));assert(!nodes['#detailBody'].innerHTML.includes('<img src=x'));
 vm.runInContext('setView("saved");tagFilter="感謝";render()',ctx);assert(nodes['#cards'].innerHTML.includes('海內存知己'));
-nodes['#useExercise'].onclick();check('view==="practice"');assert(nodes['#practiceText'].value.includes('海內存知己'));assert(nodes['#practiceText'].value.includes('我的改寫'));
+nodes['#useExercise'].onclick();check('view==="practice"');assert.equal(nodes['#practiceText'].value,'');assert(nodes['#practicePrompt'].textContent.includes('海內存知己'));assert(nodes['#practiceBefore'].value.length>0);check('practiceHistory.some(r=>r.after==="原有練習")');
 vm.runInContext('setView("today")',ctx);const firstReview=nodes['#review'].innerHTML.match(/data-review="(\d+)"/)[1];nodes['#review'].listeners.click({target:{closest:s=>s==='[data-review]'?{dataset:{review:firstReview}}:null}});assert.equal(JSON.parse(local['shiju-v1']).reviewed,+firstReview);assert(nodes['#review'].innerHTML.includes('今天已複習'));
 vm.runInContext('openDetail(daily[0].id)',ctx);check('read.length===1');vm.runInContext('openDetail(daily[0].id)',ctx);check('read.length===1');assert.equal(nodes['#progressTrack'].attributes['aria-valuenow'],1);
 // Exercise storage failure is surfaced, without a false success message.
-ctx.localStorage.setItem=()=>{throw Error('quota')};nodes['#practiceText'].value='新練習';nodes['#savePractice'].onclick();assert(nodes['#toast'].textContent.includes('無法儲存'));
+ctx.localStorage.setItem=()=>{throw Error('quota')};nodes['#practiceText'].value='新練習';nodes['#savePractice'].onclick();assert(nodes['#toast'].textContent.includes('未儲存'));
 console.log('PASS: 10 full rolling 200-day cycles; four types x 5/day; 4000 unique entries with 1000/type; exact source spans; pagination; legacy data; citations; author search; tags; note XSS escaping; exercise transfer; review; reading progress; storage errors.');
 })().catch(e=>{console.error(e);process.exitCode=1});
