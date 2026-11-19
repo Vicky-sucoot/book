@@ -12,7 +12,7 @@
   "sourceCommit": "b8594f81a89752241442f2ce267d6f66f96704ee",
   "newOriginals": "875 則情境化原創短句（35 個情境 × 25 項表達方法），加上原有 125 則。",
   "newExcerpts": "依電子底本句界擷取、去重；提供閱讀提示與同段原文，並非逐句人工校勘或白話翻譯。",
-  "contentHash": "21bcbe63b48b21223db71ee63a90796ca9c8d34d120002024d0ffdc49bbac2fa",
-  "editorialSelection": 25,
-  "editorialScope": "10 則原創及 15 則古典詩文，補白話解釋、適用情境與使用提醒；其餘內容仍為原有閱讀提示。"
+  "contentHash": "ae051e6132657f86af0cf13962d219a8aa181b29b2140fb60c8fb82b80627978",
+  "editorialSelection": 50,
+  "editorialScope": "35 則原創及 15 則古典詩文附白話解釋、情境與提醒。其餘內容依閱讀需求分組，情境方法標示相同方法群組，並非逐句校勘。"
 }

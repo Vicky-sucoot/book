@@ -20,7 +20,7 @@ node tests/journal.test.cjs
 
 原創包含原有 125 則及 875 則情境化短句（35 個對話情境 × 25 項表達方法），不是古人引言。新增引用以固定版本的 chinese-poetry 語料為電子底本，按句界節錄、去重，附作品、作者、段落位置、原文範圍與同段原文。這些新增內容提供閱讀提示，不宣稱逐句人工校勘或白話翻譯。
 
-完整來源檔案及 MIT 授權在 `sources/`，版本記錄在 `sources/provenance.json`。`python3 scripts/expand-library.py` 可從保留的語料重建句庫與 `dist/library-report.json`；舊有 140 則 ID 保留。`python3 scripts/curate-library.py` 套用 25 則編輯精選、白話解釋與使用提醒；再以 `python3 scripts/package-offline.py` 重建獨立 HTML 及 ZIP。修改資料後須重新產生兩者，並提升 Service Worker 快取版本。
+完整來源檔案及 MIT 授權在 `sources/`，版本記錄在 `sources/provenance.json`。`python3 scripts/expand-library.py` 可從保留的語料重建句庫與 `dist/library-report.json`；舊有 140 則 ID 保留。`python3 scripts/curate-library.py` 套用 50 則編輯精選、白話解釋與使用提醒；再以 `python3 scripts/package-offline.py` 重建獨立 HTML 及 ZIP。修改資料後須重新產生兩者，並提升 Service Worker 快取版本。
 
 ## 本機資料
 
@@ -50,7 +50,7 @@ node tests/offline.test.cjs
 
 閱讀設定提供標準／大字／特大字、標準／寬鬆行距、日間／夜間／跟隨系統，以及均衡／職場／家庭／寫作偏好。偏好只調整同日各類內順序與主句，不替換當日內容，因此不同偏好仍維持 200 天不重複。
 
-25 則編輯精選包含 10 則原創與 15 則古典詩文，補有白話解釋、適用情境和使用提醒。其餘句庫維持原本的閱讀提示，沒有標示為逐句審訂。
+50 則編輯精選包含 35 則原創與 15 則古典詩文，補有白話解釋、適用情境和使用提醒。其餘句庫維持原本的閱讀提示，沒有標示為逐句審訂。
 
 獨立「設定」分頁集中閱讀設定、備份／匯入、桌面安裝、下載與句庫來源說明。首頁保留閱讀內容。
 
@@ -78,3 +78,25 @@ node tests/reload.test.cjs
 `tests/browser.test.cjs` 是真實 Chromium 的離線端對端驗收腳本，包含桌面與手機寬度、夜間模式、日期已讀、回饋、練習歷史、實際備份下載及匯入全新瀏覽器。需要已安裝的 Playwright 與 Chromium，可透過 `SHIJU_CHROMIUM` 指定執行檔。
 
 此環境的真實瀏覽器驗收 **未通過執行條件**：Chromium 以 `ERR_BLOCKED_BY_ADMINISTRATOR` 阻擋 `file://`；Sites 預覽 relay 逾時；雲端瀏覽器建立頁面回報 `Browser Use could not read requirements`。沒有修改或繞過這些限制。單元、離線快取模擬及冷啟動檢查通過，不能代替真實瀏覽器驗收。
+
+## 1.7.0：短閱讀、品質編排與每週回顧
+
+- 今日必讀 3 則取自當日原有 20 則，依編輯權重、偏好與回饋排序，盡量兼顧不同類型與方法群組。不增加每日句數，也不更換當日集合。
+- 「有啟發」增加推薦優先度，「較普通」降低優先度；「出處疑問」保留在句庫與每日清單，但排除主句／必讀推薦並標示本機待核對。若當日全部被標記疑問，暫停推薦。回饋不會自動傳送或被當成已完成核對。
+- 編輯精選擴充至 50 則。其他內容區分情境方法、上下文閱讀與詩文閱讀；875 則情境短句標記 25 種方法群組，敘事／人物節錄提醒連讀上下文。這些分組是編排提示，不代表新增內容已逐句人工校勘。
+- 每週回顧依台北日期、週一至週日計算；閱讀量來自按日紀錄，最近三組改寫只計手動儲存歷史。收藏主題依目前全部收藏計算，畫面有明確標示。下週目標保存在本機並納入備份，匯入時已有目標優先保留。
+- 設定提供備份後更新的引導、確認發布版本及合併還原筆數。時間僅表示產生過備份下載，並不證明檔案已保存；斷網時發布版本檢查會清楚顯示無法確認。獨立檔案的更新下載連回網站，需要網路與原有網站訪問權限。
+
+完整重建順序：
+
+```sh
+python3 scripts/expand-library.py
+python3 scripts/curate-library.py
+python3 scripts/refine-library.py
+python3 scripts/package-offline.py
+node tests/meaningful.test.cjs
+```
+
+`dist/version.json` 為發布版本資訊，明確按鈕點擊後才讀取。Service Worker 不快取此端點，以免把舊版資訊當成目前發布版本。核心離線功能不依賴此端點。
+
+真實 Chromium 驗收再次嘗試仍回報 `ERR_BLOCKED_BY_ADMINISTRATOR`，尚未完成；沒有更改政策。既有瀏覽器驗收腳本可在允許本機 HTML 的環境續跑。
