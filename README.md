@@ -20,7 +20,7 @@ node tests/journal.test.cjs
 
 原創包含原有 125 則及 875 則情境化短句（35 個對話情境 × 25 項表達方法），不是古人引言。新增引用以固定版本的 chinese-poetry 語料為電子底本，按句界節錄、去重，附作品、作者、段落位置、原文範圍與同段原文。這些新增內容提供閱讀提示，不宣稱逐句人工校勘或白話翻譯。
 
-完整來源檔案及 MIT 授權在 `sources/`，版本記錄在 `sources/provenance.json`。`python3 scripts/expand-library.py` 可從保留的語料重建句庫與 `dist/library-report.json`；舊有 140 則 ID 保留。`python3 scripts/package-offline.py` 重建獨立 HTML 及 ZIP。修改資料後須重新產生兩者，並提升 Service Worker 快取版本。
+完整來源檔案及 MIT 授權在 `sources/`，版本記錄在 `sources/provenance.json`。`python3 scripts/expand-library.py` 可從保留的語料重建句庫與 `dist/library-report.json`；舊有 140 則 ID 保留。`python3 scripts/curate-library.py` 套用 25 則編輯精選、白話解釋與使用提醒；再以 `python3 scripts/package-offline.py` 重建獨立 HTML 及 ZIP。修改資料後須重新產生兩者，並提升 Service Worker 快取版本。
 
 ## 本機資料
 
@@ -45,3 +45,17 @@ node tests/offline.test.cjs
 ```
 
 涵蓋每類 1,000 則、正規化後無重複、十組跨邊界的完整 200 日輪替、舊 ID 保留、引用與保留語料一致、原文範圍及引號完整、下載 ZIP 與獨立 HTML 一致、離線資料包含 4,000 則。瀏覽器安裝與版面仍須另行實測。
+
+## 閱讀設定、精選與備份
+
+閱讀設定提供標準／大字／特大字、標準／寬鬆行距、日間／夜間／跟隨系統，以及均衡／職場／家庭／寫作偏好。偏好只調整同日各類內順序與主句，不替換當日內容，因此不同偏好仍維持 200 天不重複。
+
+25 則編輯精選包含 10 則原創與 15 則古典詩文，補有白話解釋、適用情境和使用提醒。其餘句庫維持原本的閱讀提示，沒有標示為逐句審訂。
+
+「匯出備份 JSON」採用 `shiju-backup` version 1 格式，包含收藏、心得、標籤、練習、複習歷史和閱讀設定。匯入先預覽，按下合併後才寫入本機。相同 ID 心得保留目前非空版本、標籤取聯集、練習附加且重複匯入不重複附加；設定預設不覆蓋，可選擇套用備份設定。未知 ID 會略過。無效格式、過大檔案與寫入失敗均不替換目前資料。備份不包含句庫或當日閱讀進度。
+
+```sh
+node tests/personal.test.cjs
+```
+
+測試涵蓋設定、所有偏好下的輪替完整性、精選篩選、備份資料、匯入預覽、衝突、去重、設定選項、無效檔案與寫入失敗。實際瀏覽器檔案下載與視覺效果仍須另行驗證。
