@@ -1,8 +1,8 @@
 const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert');const fixture=fs.readFileSync(path.join(__dirname,'journal.test.cjs'),'utf8');const setup=fixture.slice(0,fixture.indexOf('(async()=>'));
 const test=`
 (async()=>{await new Promise(r=>setImmediate(r));
-check('bank.length===4000&&bank.filter(q=>q.curated).length===50');check('bank.every(q=>q.contentGroup&&q.familyKey&&Number.isFinite(q.selectionWeight))');
-check('Array.from({length:200},(_,n)=>selectDaily(n)).every(items=>{const picks=essentialPicks(items);return picks.length===3&&new Set(picks.map(q=>q.id)).size===3&&picks.every(q=>items.includes(q))&&new Set(picks.map(q=>q.kind)).size===3})');
+check('bank.length===6000&&bank.filter(q=>q.curated).length===50');check('bank.every(q=>q.contentGroup&&q.familyKey&&Number.isFinite(q.selectionWeight))');
+check('Array.from({length:300},(_,n)=>selectDaily(n)).every(items=>{const picks=essentialPicks(items);return picks.length===3&&new Set(picks.map(q=>q.id)).size===3&&picks.every(q=>items.includes(q))&&new Set(picks.map(q=>q.kind)).size===3})');
 assert.equal((nodes['#essentialPanel'].innerHTML.match(/<article>/g)||[]).length,3);check('essentialPicks(daily).length===3');
 vm.runInContext('const target=daily.find(q=>q.kind==="古詩");feedback[target.id]={rating:"inspiring",note:"",updatedAt:new Date().toISOString()};render()',ctx);check('essentialPicks(daily)[0].kind==="古詩"');
 vm.runInContext('feedback={};for(const q of daily.filter(q=>q.kind==="古典短句"))feedback[q.id]={rating:"ordinary",note:"",updatedAt:new Date().toISOString()};render()',ctx);check('essentialPicks(daily).every(q=>q.kind!=="古典短句")');
@@ -15,9 +15,9 @@ check('Object.keys(backupPayload().data.weeklyGoals).length===1');const payload=
 // Import receipt gives actual post-merge counts, and old backups preserve new goals.
 vm.runInContext('pendingBackup=parseBackup({format:"shiju-backup",version:1,data:{saved:[50,60]}})',ctx);ctx.document.querySelector('#importSettings').checked=false;nodes['#confirmImport'].onclick();check('weeklyGoals[weeklySummary().nextWeek].topic==="拒絕"');check('restoreReceipt.saved===saved.length&&restoreReceipt.practiceHistory===practiceHistory.length');assert(nodes['#restoreReceipt'].textContent.includes('目前資料'));
 vm.runInContext('setView("settings");lastExportAt=null;renderVersionInfo()',ctx);assert(nodes['#updateBackupStatus'].textContent.includes('先匯出'));vm.runInContext('lastExportAt=new Date().toISOString();renderVersionInfo()',ctx);assert(nodes['#updateBackupStatus'].textContent.includes('今天已產生'));
-ctx.fetch=async()=>({ok:true,json:async()=>({appVersion:'1.8.0',releaseNotes:['測試新版']})});await nodes['#checkUpdate'].onclick();assert(nodes['#updateInfo'].textContent.includes('1.8.0'));ctx.fetch=async()=>{throw Error('offline')};await nodes['#checkUpdate'].onclick();assert(nodes['#updateInfo'].textContent.includes('仍可正常使用'));
+ctx.fetch=async()=>({ok:true,json:async()=>({appVersion:'1.9.0',releaseNotes:['測試新版']})});await nodes['#checkUpdate'].onclick();assert(nodes['#updateInfo'].textContent.includes('1.9.0'));ctx.fetch=async()=>{throw Error('offline')};await nodes['#checkUpdate'].onclick();assert(nodes['#updateInfo'].textContent.includes('仍可正常使用'));
 // Failure never discards the current weekly goal.
 const goal=vm.runInContext('JSON.stringify(weeklyGoals)',ctx);ctx.localStorage.setItem=()=>{throw Error('quota')};vm.runInContext('setView("weekly")',ctx);nodes['#weeklyTopic'].value='提問';nodes['#weeklyGoal'].value='另一個目標';nodes['#saveWeeklyGoal'].onclick();assert.equal(vm.runInContext('JSON.stringify(weeklyGoals)',ctx),goal);assert(nodes['#weeklyGoalStatus'].textContent.includes('未儲存'));
-console.log('PASS: 3 of 20 picks across 200 days; genre/method diversity; feedback ranking and pending-source exclusion; all daily quotas unchanged; Taipei week boundaries; weekly manual practice/reading stats; goals and backup compatibility; restore counts; update check offline failure and atomic goal saves.');
+console.log('PASS: 3 of 20 picks across 300 days; genre/method diversity; feedback ranking and pending-source exclusion; all daily quotas unchanged; Taipei week boundaries; weekly manual practice/reading stats; goals and backup compatibility; restore counts; update check offline failure and atomic goal saves.');
 })().catch(e=>{console.error(e);process.exitCode=1});`;
 vm.runInNewContext(setup+test,{require,__dirname,console,setImmediate,process});

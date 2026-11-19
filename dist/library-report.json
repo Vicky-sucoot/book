@@ -1,18 +1,21 @@
 {
-  "total": 4000,
+  "total": 6000,
   "byKind": {
-    "原創觀點": 1000,
-    "古典短句": 1000,
-    "文學節選": 1000,
-    "古詩": 1000
+    "原創觀點": 1500,
+    "古典短句": 1500,
+    "文學節選": 1500,
+    "古詩": 1500
   },
-  "cycleDays": 200,
+  "cycleDays": 300,
   "dailyPerKind": 5,
   "sourceRepository": "https://github.com/chinese-poetry/chinese-poetry",
   "sourceCommit": "b8594f81a89752241442f2ce267d6f66f96704ee",
-  "newOriginals": "875 則情境化原創短句（35 個情境 × 25 項表達方法），加上原有 125 則。",
+  "newOriginals": "保留原有 125 則及 875 則情境短句，追加 500 則親子情境原創（20 個情境 × 25 種方法）。",
   "newExcerpts": "依電子底本句界擷取、去重；提供閱讀提示與同段原文，並非逐句人工校勘或白話翻譯。",
-  "contentHash": "ae051e6132657f86af0cf13962d219a8aa181b29b2140fb60c8fb82b80627978",
+  "contentHash": "f3910039bf8195aece2b0cf1d8cfbb8efe0279a7aef89bb9f79d1496d202cd58",
   "editorialSelection": 50,
-  "editorialScope": "35 則原創及 15 則古典詩文附白話解釋、情境與提醒。其餘內容依閱讀需求分組，情境方法標示相同方法群組，並非逐句校勘。"
+  "editorialScope": "35 則原創及 15 則古典詩文附白話解釋、情境與提醒。其餘內容依閱讀需求分組，情境方法標示相同方法群組，並非逐句校勘。",
+  "parentingEntries": 500,
+  "parentingMethod": "20 個親子情境 × 25 種表達方法，含孩子的話、成人前後說法及參考年齡；現代原創，非古典原文。",
+  "baseline": "sources/library-4000.json；原有 4,000 則的 ID 與內容完整保留。"
 }

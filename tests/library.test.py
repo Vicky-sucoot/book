@@ -1,10 +1,13 @@
 import json,re,collections,hashlib,zipfile
 from pathlib import Path
 root=Path(__file__).resolve().parents[1];load=lambda p:json.loads(p.read_text());bank=load(root/'dist/quotes.json');seed=load(root/'sources/seed-quotes.json')
-assert len(bank)==4000
-assert collections.Counter(q['kind'] for q in bank)==dict.fromkeys(['原創觀點','古典短句','文學節選','古詩'],1000)
+assert len(bank)==6000
+assert collections.Counter(q['kind'] for q in bank)==dict.fromkeys(['原創觀點','古典短句','文學節選','古詩'],1500)
 assert all(bank[q['id']]['quote']==q['quote'] for q in seed)
-assert len({re.sub(r'[^\u3400-\u9fff]','',q['quote']).replace('衆','眾').replace('隣','鄰') for q in bank})==4000
+assert bank[:4000]==load(root/'sources/library-4000.json')
+assert sum(bool(q.get('parenting')) for q in bank)==500
+assert all(q['dialogue'].get('ageRange') and q['dialogue'].get('child') and q['dialogue'].get('guidance') for q in bank if q.get('parenting'))
+assert len({re.sub(r'[^\u3400-\u9fff]','',q['quote']).replace('衆','眾').replace('隣','鄰') for q in bank})==6000
 paragraphs={}
 def walk(o,out):
  if isinstance(o,dict):
@@ -25,5 +28,5 @@ report=load(root/'dist/library-report.json');assert report['contentHash']==hashl
 with zipfile.ZipFile(root/'dist/shiju-offline.zip') as z:
  assert z.read('拾句離線版.html')==(root/'dist/shiju-offline.html').read_bytes()
  assert b'JackeyGao' in z.read('來源授權.txt')
- assert json.loads(z.read('句庫說明.json'))['total']==4000
-print('PASS: 4000 unique entries, 1000/type; preserved IDs; each new excerpt matches retained corpus and source span; balanced quotations; report hash; offline ZIP and license.')
+ assert json.loads(z.read('句庫說明.json'))['total']==6000
+print('PASS: 6000 unique entries, 1500/type; preserved IDs; each new excerpt matches retained corpus and source span; balanced quotations; report hash; offline ZIP and license.')
