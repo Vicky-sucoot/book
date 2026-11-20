@@ -4,7 +4,9 @@ root=Path(__file__).resolve().parents[1];load=lambda p:json.loads(p.read_text())
 assert len(bank)==6000
 assert collections.Counter(q['kind'] for q in bank)==dict.fromkeys(['原創觀點','古典短句','文學節選','古詩'],1500)
 assert all(bank[q['id']]['quote']==q['quote'] for q in seed)
-assert bank[:4000]==load(root/'sources/library-4000.json')
+baseline=load(root/'sources/library-4000.json')
+assert all({k:v for k,v in q.items() if not k.startswith('workplace')}==baseline[q['id']] for q in bank[:4000])
+assert sum(bool(q.get('workplace')) for q in bank)==500
 assert sum(bool(q.get('parenting')) for q in bank)==500
 assert all(q['dialogue'].get('ageRange') and q['dialogue'].get('child') and q['dialogue'].get('guidance') for q in bank if q.get('parenting'))
 assert len({re.sub(r'[^\u3400-\u9fff]','',q['quote']).replace('衆','眾').replace('隣','鄰') for q in bank})==6000
