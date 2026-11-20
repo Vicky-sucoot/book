@@ -175,3 +175,13 @@ node tests/experience.test.cjs
 ```
 
 `OFFLINE_CACHE_NAME` 必須與 `sw.js` 的版本一致；資源清單也需同步。程式測試涵蓋本版／舊版／部分／拒絕存取快取、離線獨立檔、網路與安裝狀態區分及更新失敗。真實 iPhone 及瀏覽器驗收限制仍未解除，不以模擬測試宣稱實機成功。
+
+## 1.10.1：PWA 發布與安裝網址
+
+PWA 網址為網站根目錄；`?install=1` 會在句庫載入後開啟設定內的安裝說明。Manifest 的 `id`、`start_url` 與 `scope` 保持 `./`，避免把既有安裝識別改掉；以 `standalone` 開啟，提供 192／512 圖示、maskable 用途及 iPhone 180px 圖示與 Apple 主畫面 metadata。
+
+私有網站仍保留原本訪問權限，Manifest link 使用 `crossorigin=use-credentials`，避免需要登入的 manifest 請求缺少憑證。此改動不會把網站公開。
+
+Service Worker 與離線驗證的清單同步改為核心 App 資源，加入 Apple 圖示，不預存獨立 HTML／ZIP，避免安裝手機版時重複下載大型包。下載版仍照常發布；下載檔案需要連線。版本查詢仍走網路，不把舊資料當最新發布資訊。註冊使用 `updateViaCache: none` 以確認 Worker 更新。
+
+iPhone：Safari 開啟安裝網址，登入後點「分享 → 加入主畫面」。從主畫面再次開啟並保持連線，等待離線資料已備妥，再自行測試斷網重開。程式／快取模擬檢查不能取代 iPhone 實機安裝驗證。
