@@ -1,5 +1,5 @@
 'use strict';
-const CACHE='shiju-offline-v10-no-date-history';
+const CACHE='shiju-offline-v11-experience';
 const ASSETS=['./','./index.html','./style.css','./app.js','./quotes.json','./manifest.webmanifest','./icon-192.png','./icon-512.png','./shiju-offline.html','./shiju-offline.zip','./source-license.txt','./library-report.json'];
 const urlFor=path=>new URL(path,self.registration.scope).href;
 self.addEventListener('install',event=>event.waitUntil((async()=>{

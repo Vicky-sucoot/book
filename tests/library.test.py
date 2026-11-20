@@ -5,7 +5,9 @@ assert len(bank)==6000
 assert collections.Counter(q['kind'] for q in bank)==dict.fromkeys(['原創觀點','古典短句','文學節選','古詩'],1500)
 assert all(bank[q['id']]['quote']==q['quote'] for q in seed)
 baseline=load(root/'sources/library-4000.json')
-assert all({k:v for k,v in q.items() if not k.startswith('workplace')}==baseline[q['id']] for q in bank[:4000])
+assert all(all(q[k]==baseline[q['id']][k] for k in ['id','quote','kind','category','source']) for q in bank[:4000])
+assert sum(bool(q.get('curated')) for q in bank)==100
+assert sum(bool((q.get('workplaceDialogue') or q.get('dialogue',{})).get('tones')) for q in bank)==1000
 assert sum(bool(q.get('workplace')) for q in bank)==500
 assert sum(bool(q.get('parenting')) for q in bank)==500
 assert all(q['dialogue'].get('ageRange') and q['dialogue'].get('child') and q['dialogue'].get('guidance') for q in bank if q.get('parenting'))
